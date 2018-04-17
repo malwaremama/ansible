@@ -1,0 +1,34 @@
+# FILENAME
+# panos_backup2file.yml
+#
+# DESCRIPTION
+# Playbook used to take a snapshot of the running config from a PAN-OS device and write the output
+# to an XML file
+#
+# REQUIREMENTS
+# pip install ansible
+# ansible-galaxy install PaloAltoNetworks.paloaltonetworks (roles)
+# create and configure the credentials Ansible will use to run the playbook. This will be a *.yml to
+# place within 'include_vars'
+#
+# TO EXECUTE
+# ansible-playbook panos_backup2file
+---
+- hosts: localhost
+  connection: localhost
+  gather_facts: False
+
+  roles:
+   - role: PaloAltoNetworks.paloaltonetworks
+
+  tasks:
+    - name: Porting over your secrets...
+      include_vars: firewall-secrets.yml #Change to target team *-secrets.yml for proper authentication sequence.
+      no_log: 'no'
+
+    - name: Creating backup config file...
+      panos_backup2file:
+        ip_address: "{{mgmt_ip}}"
+        #username: "{{ }}"
+        #password: "{{ }}"
+        api_key: "{{api_key}}" #If using the api_key then username and password are not required and can be left commented out.
